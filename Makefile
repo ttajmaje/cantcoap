@@ -4,12 +4,12 @@ INCLUDE_INSTALL=$(HOME)/include
 LIBS=-L/usr/local/lib -L/usr/lib/ -L. -lcunit
 INCLUDE=-I/usr/local/include -I/usr/include
 
-#CXX=g++
-CXX=clang++
+CXX=g++-4.7
+#CXX=clang++
 CXXFLAGS=-Wall -DDEBUG -std=c++11
 
-#CC=gcc
-CC=clang
+CC=gcc-4.7
+#CC=clang
 CFLAGS=-Wall -std=c99 -DDEBUG
 
 default: nethelper.o staticlib test
