@@ -143,7 +143,7 @@ class CoapPDU {
 		uint16_t getMessageID();
 
 		// options
-		int addOption(uint16_t optionNumber, uint16_t optionLength, uint8_t *optionValue);
+		int addOption(uint16_t optionNumber, uint16_t optionLength, uint8_t *optionValue, bool before = false);
 		// gets a list of all options
 		CoapOption* getOptions();
 		int getNumOptions();

@@ -337,6 +337,10 @@ int CoapPDU::validate() {
 		optionNumber += optionDelta;
 		optionValueLength = getOptionValueLength(&_pdu[optionPos]);
 		DBG("Got option: %d with length %d",optionNumber,optionValueLength);
+
+		// set current option number as the max option number
+		_maxAddedOptionNumber = optionNumber;
+
 		// compute total length
 		totalLength = 1; // mandatory header
 		totalLength += computeExtraBytes(optionDelta);
@@ -971,14 +975,21 @@ CoapPDU::CoapOption* CoapPDU::getOptions() {
  * \param optionValue A pointer to the byte sequence that is the option payload (bytes will be copied).
  * \return 0 on success, 1 on failure.
  */
-int CoapPDU::addOption(uint16_t insertedOptionNumber, uint16_t optionValueLength, uint8_t *optionValue) {
+int CoapPDU::addOption(uint16_t insertedOptionNumber, uint16_t optionValueLength, uint8_t *optionValue, bool before) {
 	// this inserts the option in memory, and re-computes the deltas accordingly
 	// prevOption <-- insertionPosition
 	// nextOption
 
 	// find insertion location and previous option number
 	uint16_t prevOptionNumber = 0; // option number of option before insertion point
-	int insertionPosition = findInsertionPosition(insertedOptionNumber,&prevOptionNumber);
+
+	int insertionPosition;
+	if(!before){
+		insertionPosition = findInsertionPosition(insertedOptionNumber,&prevOptionNumber);
+	} else {
+		//TT we want to insert an option BEFORE the options of the same number
+		insertionPosition = findInsertionPosition(insertedOptionNumber - 1,&prevOptionNumber);
+	}
 	DBG("inserting option at position %d, after option with number: %hu",insertionPosition,prevOptionNumber);
 
 	// compute option delta length
